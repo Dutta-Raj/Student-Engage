@@ -6,14 +6,13 @@
     <title>StudentEngage | AI Education Platform</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
-    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
-    <meta http-equiv="Pragma" content="no-cache">
-    meta http-equiv="Expires" content="0">
     <style>
         .gradient-bg { background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%); }
         .loading-spinner { width: 24px; height: 24px; border: 3px solid #e2e8f0; border-top-color: #4f46e5; border-radius: 50%; animation: spin 0.8s linear infinite; display: inline-block; }
         @keyframes spin { to { transform: rotate(360deg); } }
         .tab-btn.active { color: #4f46e5; border-bottom: 2px solid #4f46e5; }
+        .nav-link { transition: all 0.3s ease; }
+        .nav-link:hover { color: #4f46e5; }
     </style>
 </head>
 <body class="bg-gray-50">
@@ -29,11 +28,11 @@
                     <span class="text-xs bg-indigo-100 text-indigo-600 px-2 py-1 rounded-full">AI-Powered</span>
                 </div>
                 <div class="flex space-x-4 mt-2 md:mt-0">
-                    <button onclick="showTab('career')" class="tab-btn px-3 py-1 rounded-lg text-gray-600 hover:text-indigo-600 transition" data-tab="career">Career</button>
-                    <button onclick="showTab('loan')" class="tab-btn px-3 py-1 rounded-lg text-gray-600 hover:text-indigo-600 transition" data-tab="loan">Loan</button>
-                    <button onclick="showTab('universities')" class="tab-btn px-3 py-1 rounded-lg text-gray-600 hover:text-indigo-600 transition" data-tab="universities">Universities</button>
-                    <button onclick="window.location.href='/tracker.html'" class="px-3 py-1 rounded-lg text-gray-600 hover:text-indigo-600 transition">Documents</button>
-                    <button onclick="showTab('dashboard')" class="tab-btn px-3 py-1 rounded-lg text-gray-600 hover:text-indigo-600 transition" data-tab="dashboard">Dashboard</button>
+                    <button onclick="showTab('career')" class="nav-link px-3 py-1 rounded-lg text-gray-600 hover:text-indigo-600 transition">Career</button>
+                    <button onclick="showTab('loan')" class="nav-link px-3 py-1 rounded-lg text-gray-600 hover:text-indigo-600 transition">Loan</button>
+                    <button onclick="showTab('universities')" class="nav-link px-3 py-1 rounded-lg text-gray-600 hover:text-indigo-600 transition">Universities</button>
+                    <button onclick="window.location.href='/tracker.html'" class="nav-link px-3 py-1 rounded-lg text-gray-600 hover:text-indigo-600 transition">Documents</button>
+                    <button onclick="showTab('dashboard')" class="nav-link px-3 py-1 rounded-lg text-gray-600 hover:text-indigo-600 transition">Dashboard</button>
                 </div>
             </div>
         </div>
@@ -48,35 +47,123 @@
                     <h2 class="text-2xl font-bold text-gray-800 mb-6">AI Career Advisor</h2>
                     <div class="grid md:grid-cols-2 gap-6">
                         <div class="space-y-4">
-                            <div><label class="block text-gray-700 font-medium mb-1">Full Name</label><input type="text" id="name" class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-indigo-500" placeholder="Enter your name"></div>
-                            <div><label class="block text-gray-700 font-medium mb-1">CGPA / Percentage</label><input type="number" id="cgpa" step="0.1" class="w-full px-4 py-2 border rounded-lg" placeholder="Enter CGPA"></div>
-                            <div><label class="block text-gray-700 font-medium mb-1">Field of Interest</label><select id="field" class="w-full px-4 py-2 border rounded-lg"><option value="">Select field</option><option value="AI/ML">🤖 Artificial Intelligence / Machine Learning</option><option value="Data Science">📊 Data Science & Analytics</option><option value="Computer Science">💻 Computer Science</option><option value="Business Analytics">📈 Business Analytics</option><option value="Cybersecurity">🔒 Cybersecurity</option></select></div>
-                            <div><label class="block text-gray-700 font-medium mb-1">Budget (₹ Lakhs)</label><input type="number" id="budget" class="w-full px-4 py-2 border rounded-lg" placeholder="Enter budget"></div>
-                            <button onclick="getCareerAdvice()" class="w-full gradient-bg text-white font-semibold py-2 rounded-lg hover:opacity-90 transition">Get AI Advice</button>
+                            <div>
+                                <label class="block text-gray-700 font-medium mb-1">Full Name</label>
+                                <input type="text" id="name" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent" placeholder="Enter your name">
+                            </div>
+                            <div>
+                                <label class="block text-gray-700 font-medium mb-1">CGPA / Percentage</label>
+                                <input type="number" id="cgpa" step="0.1" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500" placeholder="Enter CGPA">
+                            </div>
+                            <div>
+                                <label class="block text-gray-700 font-medium mb-1">Field of Interest</label>
+                                <select id="field" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500">
+                                    <option value="">Select field</option>
+                                    <option value="AI/ML">🤖 Artificial Intelligence / Machine Learning</option>
+                                    <option value="Data Science">📊 Data Science & Analytics</option>
+                                    <option value="Computer Science">💻 Computer Science</option>
+                                    <option value="Business Analytics">📈 Business Analytics</option>
+                                    <option value="Cybersecurity">🔒 Cybersecurity</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-gray-700 font-medium mb-1">Budget (₹ Lakhs)</label>
+                                <input type="number" id="budget" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500" placeholder="Enter budget">
+                            </div>
+                            <button onclick="getCareerAdvice()" class="w-full gradient-bg text-white font-semibold py-2 rounded-lg hover:opacity-90 transition">
+                                Get AI Advice
+                            </button>
                         </div>
                         <div class="bg-indigo-50 rounded-xl p-4">
                             <h3 class="font-semibold text-gray-800 mb-3">Quick Stats</h3>
-                            <div class="grid grid-cols-2 gap-3"><div class="text-center p-2 bg-white rounded-lg"><div class="text-2xl font-bold text-indigo-600">16+</div><div class="text-sm">Universities</div></div><div class="text-center p-2 bg-white rounded-lg"><div class="text-2xl font-bold text-indigo-600">6+</div><div class="text-sm">Countries</div></div><div class="text-center p-2 bg-white rounded-lg"><div class="text-2xl font-bold text-indigo-600">95%</div><div class="text-sm">Match Accuracy</div></div><div class="text-center p-2 bg-white rounded-lg"><div class="text-2xl font-bold text-indigo-600">₹8L-60L</div><div class="text-sm">Cost Range</div></div></div>
+                            <div class="grid grid-cols-2 gap-3">
+                                <div class="text-center p-2 bg-white rounded-lg">
+                                    <div class="text-2xl font-bold text-indigo-600">16+</div>
+                                    <div class="text-sm text-gray-600">Universities</div>
+                                </div>
+                                <div class="text-center p-2 bg-white rounded-lg">
+                                    <div class="text-2xl font-bold text-indigo-600">6+</div>
+                                    <div class="text-sm text-gray-600">Countries</div>
+                                </div>
+                                <div class="text-center p-2 bg-white rounded-lg">
+                                    <div class="text-2xl font-bold text-indigo-600">95%</div>
+                                    <div class="text-sm text-gray-600">Match Accuracy</div>
+                                </div>
+                                <div class="text-center p-2 bg-white rounded-lg">
+                                    <div class="text-2xl font-bold text-indigo-600">₹8L-60L</div>
+                                    <div class="text-sm text-gray-600">Cost Range</div>
+                                </div>
+                            </div>
                         </div>
                     </div>
-                    <div id="careerResult" class="mt-6 hidden"><div id="aiAdvice" class="bg-gray-50 p-4 rounded-lg whitespace-pre-wrap"></div><div id="universitiesList" class="grid md:grid-cols-2 gap-4 mt-4"></div></div>
+                    <div id="careerResult" class="mt-6 hidden">
+                        <div id="aiAdvice" class="bg-gray-50 p-4 rounded-lg whitespace-pre-wrap"></div>
+                        <div id="universitiesList" class="grid md:grid-cols-2 gap-4 mt-4"></div>
+                    </div>
                 </div>
             </div>
         </div>
 
         <!-- Loan Tab -->
         <div id="loanTab" class="tab-content hidden">
-            <div class="max-w-4xl mx-auto"><div class="bg-white rounded-2xl shadow-lg p-6"><h2 class="text-2xl font-bold mb-6">Education Loan Analyzer</h2><div class="grid md:grid-cols-2 gap-4"><div><label class="block text-gray-700 font-medium mb-1">Loan Amount (₹)</label><input type="number" id="loanAmount" class="w-full px-4 py-2 border rounded-lg" placeholder="Enter loan amount"></div><div><label class="block text-gray-700 font-medium mb-1">Tenure (Years)</label><input type="number" id="tenure" class="w-full px-4 py-2 border rounded-lg" placeholder="Enter tenure"></div><div><label class="block text-gray-700 font-medium mb-1">Expected Salary (₹/year)</label><input type="number" id="expectedSalary" class="w-full px-4 py-2 border rounded-lg" placeholder="Enter expected salary"></div></div><button onclick="checkLoanEligibility()" class="mt-4 w-full gradient-bg text-white font-semibold py-2 rounded-lg hover:opacity-90 transition">Analyze Loan</button><div id="loanResult" class="mt-6 hidden"></div></div></div>
+            <div class="max-w-4xl mx-auto">
+                <div class="bg-white rounded-2xl shadow-lg p-6">
+                    <h2 class="text-2xl font-bold text-gray-800 mb-6">Education Loan Analyzer</h2>
+                    <div class="grid md:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-gray-700 font-medium mb-1">Loan Amount (₹)</label>
+                            <input type="number" id="loanAmount" class="w-full px-4 py-2 border border-gray-300 rounded-lg" placeholder="Enter loan amount">
+                        </div>
+                        <div>
+                            <label class="block text-gray-700 font-medium mb-1">Tenure (Years)</label>
+                            <input type="number" id="tenure" class="w-full px-4 py-2 border border-gray-300 rounded-lg" placeholder="Enter tenure">
+                        </div>
+                        <div>
+                            <label class="block text-gray-700 font-medium mb-1">Expected Salary (₹/year)</label>
+                            <input type="number" id="expectedSalary" class="w-full px-4 py-2 border border-gray-300 rounded-lg" placeholder="Enter expected salary">
+                        </div>
+                    </div>
+                    <button onclick="checkLoanEligibility()" class="mt-4 w-full gradient-bg text-white font-semibold py-2 rounded-lg hover:opacity-90 transition">
+                        Analyze Loan
+                    </button>
+                    <div id="loanResult" class="mt-6 hidden"></div>
+                </div>
+            </div>
         </div>
 
         <!-- Universities Tab -->
         <div id="universitiesTab" class="tab-content hidden">
-            <div class="max-w-7xl mx-auto"><div class="bg-white rounded-2xl shadow-lg p-6"><div class="flex gap-4 mb-6"><input type="text" id="searchQuery" placeholder="Search universities..." class="flex-1 px-4 py-2 border rounded-lg"><button onclick="searchUniversities()" class="gradient-bg text-white px-6 py-2 rounded-lg hover:opacity-90 transition">Search</button></div><div id="universitiesResult" class="grid md:grid-cols-3 gap-4"></div></div></div>
+            <div class="max-w-7xl mx-auto">
+                <div class="bg-white rounded-2xl shadow-lg p-6">
+                    <div class="flex gap-4 mb-6">
+                        <input type="text" id="searchQuery" placeholder="Search universities by name, country, or course..." class="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500">
+                        <button onclick="searchUniversities()" class="gradient-bg text-white px-6 py-2 rounded-lg hover:opacity-90 transition">Search</button>
+                    </div>
+                    <div id="universitiesResult" class="grid md:grid-cols-3 gap-4"></div>
+                </div>
+            </div>
         </div>
 
         <!-- Dashboard Tab -->
         <div id="dashboardTab" class="tab-content hidden">
-            <div class="max-w-6xl mx-auto"><div class="bg-white rounded-2xl shadow-lg p-6"><div class="grid md:grid-cols-3 gap-4 mb-6"><div class="text-center p-4 bg-indigo-50 rounded-xl"><div class="text-3xl font-bold text-indigo-600" id="totalCountries">0</div><div>Countries</div></div><div class="text-center p-4 bg-indigo-50 rounded-xl"><div class="text-3xl font-bold text-indigo-600" id="totalUniversities">0</div><div>Universities</div></div><div class="text-center p-4 bg-indigo-50 rounded-xl"><div class="text-3xl font-bold text-indigo-600" id="avgSalary">$0</div><div>Avg Salary</div></div></div></div></div>
+            <div class="max-w-6xl mx-auto">
+                <div class="bg-white rounded-2xl shadow-lg p-6">
+                    <div class="grid md:grid-cols-3 gap-4 mb-6">
+                        <div class="text-center p-4 bg-indigo-50 rounded-xl">
+                            <div class="text-3xl font-bold text-indigo-600" id="totalCountries">0</div>
+                            <div class="text-gray-600">Countries</div>
+                        </div>
+                        <div class="text-center p-4 bg-indigo-50 rounded-xl">
+                            <div class="text-3xl font-bold text-indigo-600" id="totalUniversities">0</div>
+                            <div class="text-gray-600">Universities</div>
+                        </div>
+                        <div class="text-center p-4 bg-indigo-50 rounded-xl">
+                            <div class="text-3xl font-bold text-indigo-600" id="avgSalary">$0</div>
+                            <div class="text-gray-600">Average Salary</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -87,8 +174,6 @@
         function showTab(tabName) {
             document.querySelectorAll('.tab-content').forEach(t => t.classList.add('hidden'));
             document.getElementById(tabName + 'Tab').classList.remove('hidden');
-            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
-            event.target.classList.add('active');
             if(tabName === 'dashboard') loadDashboard();
             if(tabName === 'universities') loadAllUniversities();
         }
@@ -119,21 +204,17 @@
                 const universities = data.rag_retrieved_universities || [];
                 if(universities.length > 0) {
                     document.getElementById('universitiesList').innerHTML = universities.map(uni => `
-                        <div class="bg-white border rounded-lg p-4 shadow hover:shadow-md transition">
+                        <div class="bg-white border border-gray-200 rounded-lg p-4 shadow-sm hover:shadow-md transition">
                             <h4 class="font-bold text-lg text-indigo-600">${uni.name}</h4>
-                            <p class="text-gray-600">📍 ${uni.country} | Rank #${uni.ranking}</p>
+                            <p class="text-gray-600 text-sm">📍 ${uni.country} | Rank #${uni.ranking}</p>
                             <p class="text-sm mt-2">💰 Cost: $${uni.cost}/year</p>
                             <p class="text-sm">💵 Expected Salary: $${uni.avgSalary}/year</p>
                             <span class="inline-block mt-2 text-xs font-semibold text-indigo-600 bg-indigo-50 px-2 py-1 rounded">Match: ${Math.round(uni.relevanceScore || 85)}%</span>
                         </div>
                     `).join('');
-                } else {
-                    document.getElementById('universitiesList').innerHTML = '<p class="text-gray-500 text-center">No universities found. Try different criteria.</p>';
                 }
             } catch(error) {
-                console.error('Error:', error);
-                document.getElementById('aiAdvice').innerHTML = '<div class="text-red-500 text-center">Error connecting to server. Please make sure the backend is running.</div>';
-                document.getElementById('universitiesList').innerHTML = '';
+                document.getElementById('aiAdvice').innerHTML = '<div class="text-red-500 text-center">Error connecting to server. Please try again.</div>';
             }
         }
         
@@ -200,12 +281,11 @@
                 return;
             }
             document.getElementById('universitiesResult').innerHTML = universities.map(uni => `
-                <div class="bg-white border rounded-lg p-4 shadow hover:shadow-md transition">
+                <div class="bg-white border border-gray-200 rounded-lg p-4 shadow-sm hover:shadow-md transition">
                     <h4 class="font-bold text-lg text-indigo-600">${uni.name}</h4>
-                    <p class="text-gray-600">📍 ${uni.country} | Rank #${uni.ranking}</p>
+                    <p class="text-gray-600 text-sm">📍 ${uni.country} | Rank #${uni.ranking}</p>
                     <p class="text-sm mt-2">💰 Cost: $${uni.cost}/year</p>
                     <p class="text-sm">💵 Expected Salary: $${uni.avgSalary}/year</p>
-                    <p class="text-xs text-gray-500 mt-2">🎓 ${uni.courses || 'Various programs'}</p>
                 </div>
             `).join('');
         }
@@ -236,7 +316,7 @@
             }
         }
         
-        // Initialize
+        // Initialize - show career tab by default
         loadAllUniversities();
         showTab('career');
     </script>
