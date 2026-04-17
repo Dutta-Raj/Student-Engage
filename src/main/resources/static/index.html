@@ -616,309 +616,114 @@
         </div>
     </div>
 
-    <script>
-        const API_BASE = 'http://localhost:8080/api';
+    <script>        const API_BASE = '';
         let allUniversities = [];
         
-        // Documents Data
-        let DocumentsStatus = {};
-        
-        // Load Documents from localStorage
-        function loadDocuments() {
-            const saved = localStorage.getItem('studentEngage_Documents');
-            if (saved) {
-                DocumentsStatus = JSON.parse(saved);
-            } else {
-                // Initialize all documents as incomplete
-                const docs = ['passport', 'photo', 'signature', 'transcripts', 'degree', 'cgpa', 'backlog', 
-                             'ielts', 'gre', 'sat', 'bank', 'itr', 'loan', 'asset', 'offer', 'i20', 'ds160', 'visaFee'];
-                docs.forEach(doc => { DocumentsStatus[doc] = false; });
-            }
-            updateDocumentsUI();
+        function showTab(tabName) { 
+            document.querySelectorAll('.tab-content').forEach(t => t.classList.add('hidden')); 
+            document.getElementById(tabName + 'Tab').classList.remove('hidden'); 
+            if(tabName === 'dashboard') loadDashboard(); 
+            if(tabName === 'universities') loadAllUniversities(); 
         }
         
-        function toggleDocument(docId) {
-            DocumentsStatus[docId] = !DocumentsStatus[docId];
-            localStorage.setItem('studentEngage_Documents', JSON.stringify(DocumentsStatus));
-            updateDocumentsUI();
+        async function getCareerAdvice() { 
+            const name=document.getElementById('name').value||'Student'; 
+            const cgpa=document.getElementById('cgpa').value; 
+            const field=document.getElementById('field').value; 
+            const budget=document.getElementById('budget').value; 
+            if(!cgpa||!field||!budget){alert('Please fill all fields');return;} 
+            document.getElementById('careerResult').classList.remove('hidden'); 
+            document.getElementById('aiAdvice').innerHTML='<div class="text-center"><div class="loading-spinner"></div><p class="mt-2">AI analyzing...</p></div>';
+            document.getElementById('universitiesList').innerHTML='<div class="text-center">Loading recommendations...</div>';
+            try{
+                const res=await fetch('/api/career/advice',{
+                    method:'POST',
+                    headers:{'Content-Type':'application/json'},
+                    body:JSON.stringify({name,cgpa,field,budget})
+                }); 
+                const data=await res.json(); 
+                document.getElementById('aiAdvice').innerHTML=(data.ai_powered_advice||'No advice').replace(/\n/g,'<br>'); 
+                const unis=data.rag_retrieved_universities||[]; 
+                if(unis.length) document.getElementById('universitiesList').innerHTML=unis.map(u=>`<div class="bg-white border rounded-lg p-4"><h4 class="font-bold text-indigo-600">${u.name}</h4><p>📍 ${u.country} | Rank #${u.ranking}</p><p>💰 ${u.cost}/year | 💵 ${u.avgSalary}/year</p><span class="text-sm font-semibold text-indigo-600">Match: ${Math.round(u.relevanceScore||85)}%</span></div>`).join(''); 
+            }catch(e){
+                document.getElementById('aiAdvice').innerHTML='<div class="text-red-500">Error connecting to server. Please try again.</div>';
+                document.getElementById('universitiesList').innerHTML='';
+            } 
         }
         
-        function updateDocumentsUI() {
-            let completed = 0;
-            let total = 0;
-            
-            for (const [doc, status] of Object.entries(DocumentsStatus)) {
-                total++;
-                if (status) completed++;
-                
-                const element = document.querySelector(`[data-doc="${doc}"]`);
-                if (element) {
-                    const icon = element.querySelector('.check-icon');
-                    const button = element.querySelector('button');
-                    
-                    if (status) {
-                        icon.className = 'fas fa-check-circle text-green-500 mr-3 check-icon';
-                        button.innerHTML = 'Completed';
-                        button.disabled = true;
-                        button.classList.add('opacity-50');
-                        element.classList.add('completed');
-                    } else {
-                        icon.className = 'far fa-circle text-gray-400 mr-3 check-icon';
-                        button.innerHTML = 'Mark Complete';
-                        button.disabled = false;
-                        button.classList.remove('opacity-50');
-                        element.classList.remove('completed');
-                    }
-                }
-            }
-            
-            const percent = total > 0 ? Math.round((completed / total) * 100) : 0;
-            document.getElementById('progressPercent').innerHTML = percent + '%';
-            document.getElementById('progressBar').style.width = percent + '%';
+        async function checkLoanEligibility(){ 
+            const la=document.getElementById('loanAmount').value; 
+            const t=document.getElementById('tenure').value; 
+            const sal=document.getElementById('expectedSalary').value; 
+            if(!la||!t||!sal){alert('Please fill all fields');return;} 
+            document.getElementById('loanResult').classList.remove('hidden'); 
+            document.getElementById('loanAnalysis').innerHTML='<div class="loading-spinner"></div>'; 
+            try{
+                const res=await fetch('/api/loan/eligibility',{
+                    method:'POST',
+                    headers:{'Content-Type':'application/json'},
+                    body:JSON.stringify({loanAmount:parseInt(la),tenure:parseInt(t),expectedSalary:parseInt(sal)})
+                }); 
+                const d=await res.json(); 
+                const cls=d.status==='ELIGIBLE'?'bg-green-100':(d.status==='PARTIALLY_ELIGIBLE'?'bg-yellow-100':'bg-red-100'); 
+                document.getElementById('loanAnalysis').innerHTML=`<div class="${cls} p-4 rounded-lg"><div class="grid grid-cols-2 gap-3"><div><strong>Status:</strong> ${d.status}</div><div><strong>EMI:</strong> ${d.monthly_emi}</div><div><strong>EMI Ratio:</strong> ${d.emi_to_income_ratio}</div><div><strong>Loan:</strong> ₹${d.loan_amount_lakhs}L</div></div></div><div class="bg-gray-50 p-4 rounded-lg mt-3">${(d.ai_loan_advice||'').replace(/\n/g,'<br>')}</div>`; 
+            }catch(e){
+                document.getElementById('loanAnalysis').innerHTML='<div class="text-red-500">Error analyzing loan</div>';
+            } 
         }
         
-        function exportDocuments() {
-            const completed = Object.values(DocumentsStatus).filter(v => v === true).length;
-            const total = Object.values(DocumentsStatus).length;
-            const percent = Math.round((completed / total) * 100);
-            
-            const report = `
-                STUDENTENGAGE - APPLICATION Documents REPORT
-                ============================================
-                Date: ${new Date().toLocaleDateString()}
-                Progress: ${completed}/${total} (${percent}%)
-                
-                Completed Documents:
-                ${Object.entries(DocumentsStatus).filter(([_, status]) => status).map(([doc]) => `? ${doc}`).join('\n')}
-                
-                Pending Documents:
-                ${Object.entries(DocumentsStatus).filter(([_, status]) => !status).map(([doc]) => `? ${doc}`).join('\n')}
-                
-                Next Steps:
-                1. Complete all pending documents
-                2. Schedule visa interview
-                3. Apply for education loan
-                4. Book flight tickets
-            `;
-            
-            alert('Documents exported! Check console for details.\n\n' + report);
-            console.log(report);
+        async function searchUniversities(){ 
+            const q=document.getElementById('searchQuery').value; 
+            try{
+                const res=await fetch(`/api/universities?query=${encodeURIComponent(q)}`); 
+                const d=await res.json(); 
+                allUniversities=d.universities||[]; 
+                displayUniversities(allUniversities); 
+            }catch(e){} 
         }
         
-        function showTab(tabName) {
-            document.querySelectorAll('.tab-content').forEach(tab => {
-                tab.classList.add('hidden');
-            });
-            document.getElementById(tabName + 'Tab').classList.remove('hidden');
-            
-            document.querySelectorAll('.tab-btn').forEach(btn => {
-                btn.classList.remove('active');
-            });
-            event.target.classList.add('active');
-            
-            if (tabName === 'dashboard') {
-                loadDashboard();
-            }
-            if (tabName === 'universities') {
-                loadAllUniversities();
-            }
-            if (tabName === 'Documents') {
-                loadDocuments();
-            }
+        function displayUniversities(unis){ 
+            if(!unis.length){document.getElementById('universitiesResult').innerHTML='<p class="text-center">No universities found</p>';return;} 
+            document.getElementById('universitiesResult').innerHTML=unis.map(u=>`<div class="bg-white border rounded-lg p-4"><h4 class="font-bold text-indigo-600">${u.name}</h4><p>📍 ${u.country} | Rank #${u.ranking}</p><p>💰 ${u.cost}/year | 💵 ${u.avgSalary}/year</p></div>`).join(''); 
         }
         
-        async function getCareerAdvice() {
-            const name = document.getElementById('name').value;
-            const cgpa = document.getElementById('cgpa').value;
-            const field = document.getElementById('field').value;
-            const budget = document.getElementById('budget').value;
-            
-            document.getElementById('careerResult').classList.remove('hidden');
-            document.getElementById('aiAdvice').innerHTML = '<div class="text-center"><div class="loading-spinner mx-auto"></div><p class="mt-2">AI is analyzing your profile...</p></div>';
-            document.getElementById('universitiesList').innerHTML = '<div class="text-center">Loading recommendations...</div>';
-            
-            try {
-                const response = await fetch(`${API_BASE}/career/advice`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ name, cgpa, field, budget })
-                });
-                const data = await response.json();
-                
-                const adviceText = data.ai_powered_advice || data.advice || "No advice received";
-                document.getElementById('aiAdvice').innerHTML = adviceText.replace(/\n/g, '<br>');
-                
-                const universities = data.rag_retrieved_universities || [];
-                if (universities.length > 0) {
-                    const unisHtml = universities.map(uni => `
-                        <div class="bg-white border border-gray-200 rounded-xl p-4 university-card">
-                            <h4 class="font-bold text-lg text-indigo-600">${uni.name || 'University'}</h4>
-                            <p class="text-gray-600"><i class="fas fa-map-marker-alt mr-1"></i>${uni.country || 'N/A'} | Rank #${uni.ranking || 'N/A'}</p>
-                            <div class="grid grid-cols-2 gap-2 mt-3 text-sm">
-                                <div><i class="fas fa-dollar-sign text-green-600"></i> Cost: $${uni.cost || 'N/A'}/yr</div>
-                                <div><i class="fas fa-chart-line text-blue-600"></i> Salary: $${uni.avgSalary || 'N/A'}/yr</div>
-                            </div>
-                            <div class="mt-2"><span class="text-sm font-semibold text-indigo-600">?? Match: ${Math.round(uni.relevanceScore || 85)}%</span></div>
-                            <div class="mt-2 text-sm text-gray-600"><i class="fas fa-book mr-1"></i>${uni.courses || 'Various programs'}</div>
-                        </div>
-                    `).join('');
-                    document.getElementById('universitiesList').innerHTML = unisHtml;
-                }
-            } catch(error) {
-                document.getElementById('aiAdvice').innerHTML = '<div class="text-red-500">Error connecting to server. Please ensure the backend is running.</div>';
-            }
+        async function loadAllUniversities(){ 
+            try{
+                const res=await fetch('/api/universities'); 
+                const d=await res.json(); 
+                allUniversities=d.universities||[]; 
+                displayUniversities(allUniversities); 
+            }catch(e){} 
         }
         
-        async function checkLoanEligibility() {
-            const loanAmount = parseInt(document.getElementById('loanAmount').value);
-            const tenure = parseInt(document.getElementById('tenure').value);
-            const expectedSalary = parseInt(document.getElementById('expectedSalary').value);
-            
-            document.getElementById('loanResult').classList.remove('hidden');
-            document.getElementById('loanAnalysis').innerHTML = '<div class="text-center"><div class="loading-spinner mx-auto"></div><p class="mt-2">Analyzing loan options...</p></div>';
-            
-            try {
-                const response = await fetch(`${API_BASE}/loan/eligibility`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ loanAmount, tenure, expectedSalary })
-                });
-                const data = await response.json();
-                
-                const statusClass = data.status === 'ELIGIBLE' ? 'bg-green-100 border-green-500' : 
-                                   (data.status === 'PARTIALLY_ELIGIBLE' ? 'bg-yellow-100 border-yellow-500' : 'bg-red-100 border-red-500');
-                
-                let html = `
-                    <div class="${statusClass} border-l-4 p-4 rounded-lg">
-                        <div class="grid md:grid-cols-2 gap-4">
-                            <div><strong>Status:</strong> <span class="font-bold">${data.status}</span></div>
-                            <div><strong>Monthly EMI:</strong> ${data.monthly_emi || 'N/A'}</div>
-                            <div><strong>EMI/Income Ratio:</strong> ${data.emi_to_income_ratio || 'N/A'}</div>
-                            <div><strong>Loan Amount:</strong> ?${data.loan_amount_lakhs || 'N/A'} Lakhs</div>
-                        </div>
-                    </div>
-                `;
-                
-                if (data.ai_loan_advice) {
-                    html += `<div class="bg-gradient-to-r from-gray-50 to-indigo-50 p-4 rounded-lg mt-4">${data.ai_loan_advice.replace(/\n/g, '<br>')}</div>`;
-                }
-                
-                document.getElementById('loanAnalysis').innerHTML = html;
-            } catch(error) {
-                document.getElementById('loanAnalysis').innerHTML = '<div class="text-red-500">Error analyzing loan. Please try again.</div>';
-            }
-        }
-        
-        async function searchUniversities() {
-            const query = document.getElementById('searchQuery').value;
-            document.getElementById('universitiesResult').innerHTML = '';
-            document.getElementById('universitiesLoading').classList.remove('hidden');
-            
-            try {
-                const url = query ? `${API_BASE}/universities?query=${encodeURIComponent(query)}` : `${API_BASE}/universities`;
-                const response = await fetch(url);
-                const data = await response.json();
-                
-                allUniversities = data.universities || [];
-                displayUniversities(allUniversities);
-            } catch(error) {
-                document.getElementById('universitiesResult').innerHTML = '<div class="text-red-500 text-center col-span-full">Error loading universities</div>';
-            } finally {
-                document.getElementById('universitiesLoading').classList.add('hidden');
-            }
-        }
-        
-        function displayUniversities(universities) {
-            if (universities.length === 0) {
-                document.getElementById('universitiesResult').innerHTML = '<div class="text-center text-gray-500 col-span-full">No universities found. Try a different search term.</div>';
-                return;
-            }
-            
-            const html = universities.map(uni => `
-                <div class="bg-white border border-gray-200 rounded-xl p-5 university-card">
-                    <div class="flex justify-between items-start mb-3">
-                        <h4 class="font-bold text-xl text-indigo-600">${uni.name}</h4>
-                        <span class="text-xs bg-indigo-100 text-indigo-600 px-2 py-1 rounded-full">Rank #${uni.ranking}</span>
-                    </div>
-                    <p class="text-gray-600 mb-2"><i class="fas fa-map-marker-alt mr-1"></i>${uni.country}</p>
-                    <div class="grid grid-cols-2 gap-3 mb-3 text-sm">
-                        <div><i class="fas fa-dollar-sign text-green-600"></i> <strong>Tuition:</strong> $${uni.cost}/year</div>
-                        <div><i class="fas fa-chart-line text-blue-600"></i> <strong>Salary:</strong> $${uni.avgSalary}/year</div>
-                    </div>
-                    <div class="mb-2"><i class="fas fa-book text-indigo-600 mr-1"></i> <span class="text-sm">${uni.courses || 'Various programs'}</span></div>
-                    ${uni.scholarships ? `<div class="text-sm text-green-600"><i class="fas fa-trophy mr-1"></i>${uni.scholarships}</div>` : ''}
-                    ${uni.relevanceScore ? `<div class="mt-2"><div class="w-full bg-gray-200 rounded-full h-2"><div class="bg-indigo-600 h-2 rounded-full" style="width: ${uni.relevanceScore}%"></div></div><span class="text-xs text-gray-600">Match Score: ${uni.relevanceScore}%</span></div>` : ''}
-                </div>
-            `).join('');
-            document.getElementById('universitiesResult').innerHTML = html;
-        }
-        
-        function filterByCountry(country) {
-            if (country === 'all') {
-                displayUniversities(allUniversities);
-            } else {
-                const filtered = allUniversities.filter(uni => uni.country === country);
-                displayUniversities(filtered);
-            }
-        }
-        
-        async function loadAllUniversities() {
-            document.getElementById('universitiesLoading').classList.remove('hidden');
-            try {
-                const response = await fetch(`${API_BASE}/universities`);
-                const data = await response.json();
-                allUniversities = data.universities || [];
-                displayUniversities(allUniversities);
-            } catch(error) {
-                console.error('Error loading universities:', error);
-            } finally {
-                document.getElementById('universitiesLoading').classList.add('hidden');
-            }
-        }
-        
-        async function loadDashboard() {
-            try {
-                const response = await fetch(`${API_BASE}/universities`);
-                const data = await response.json();
-                const universities = data.universities || [];
-                
-                const countries = [...new Set(universities.map(u => u.country))];
-                document.getElementById('totalCountries').textContent = countries.length;
-                document.getElementById('totalUniversities').textContent = universities.length;
-                
-                const avgSalary = universities.reduce((sum, u) => sum + (u.avgSalary || 0), 0) / universities.length;
-                document.getElementById('avgSalary').textContent = `$${Math.round(avgSalary / 1000)}k`;
-                
-                const countryCount = {};
-                universities.forEach(u => {
-                    countryCount[u.country] = (countryCount[u.country] || 0) + 1;
-                });
-                const topCountries = Object.entries(countryCount).sort((a,b) => b[1] - a[1]).slice(0,5);
-                document.getElementById('topDestinations').innerHTML = topCountries.map(([country, count]) => `
-                    <div class="flex justify-between items-center p-2 bg-gray-50 rounded-lg">
-                        <span><i class="fas fa-flag mr-2"></i>${country}</span>
-                        <span class="font-bold">${count} universities</span>
-                    </div>
-                `).join('');
-                
-                const courses = ['AI/ML', 'Data Science', 'Computer Science', 'Business Analytics'];
-                document.getElementById('popularCourses').innerHTML = courses.map(course => `
-                    <div class="flex justify-between items-center p-2 bg-gray-50 rounded-lg">
-                        <span>${course}</span>
-                        <span class="text-green-600">High Demand</span>
-                    </div>
-                `).join('');
-            } catch(error) {
-                console.error('Error loading dashboard:', error);
-            }
-        }
-        
-        // Initialize
-        loadAllUniversities();
-        showTab('career');
-    </script>
+        async function loadDashboard(){ 
+            try{
+                const res=await fetch('/api/universities'); 
+                const d=await res.json(); 
+                const u=d.universities||[]; 
+                const countries=[...new Set(u.map(i=>i.country))]; 
+                document.getElementById('totalCountries').innerText=countries.length; 
+                document.getElementById('totalUniversities').innerText=u.length; 
+                const avg=u.reduce((s,i)=>s+(i.avgSalary||0),0)/u.length; 
+                document.getElementById('avgSalary').innerText='
 </body>
 </html>
+
+
+
+
+
+
++Math.round(avg/1000)+'k'; 
+            }catch(e){} 
+        }
+        
+        loadAllUniversities(); 
+        showTab('career');</script>
+</body>
+</html>
+
+
 
 
 
