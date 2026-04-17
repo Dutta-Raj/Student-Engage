@@ -3,729 +3,242 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>StudentEngage | AI-Powered Education & Loan Platform</title>
+    <title>StudentEngage | AI Education Platform</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    meta http-equiv="Expires" content="0">
     <style>
-        :root {
-            --primary: #4f46e5;
-            --primary-dark: #4338ca;
-            --secondary: #06b6d4;
-            --accent: #8b5cf6;
-            --success: #10b981;
-            --warning: #f59e0b;
-            --danger: #ef4444;
-        }
-        
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        
-        body {
-            font-family: 'Inter', system-ui, -apple-system, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
-        }
-        
-        .glass-card {
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(10px);
-            border-radius: 24px;
-            box-shadow: 0 20px 35px -10px rgba(0, 0, 0, 0.2);
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-        }
-        
-        .glass-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 25px 40px -12px rgba(0, 0, 0, 0.25);
-        }
-        
-        .nav-link {
-            position: relative;
-            transition: all 0.3s ease;
-        }
-        
-        .nav-link::after {
-            content: '';
-            position: absolute;
-            bottom: -8px;
-            left: 0;
-            width: 0;
-            height: 2px;
-            background: var(--primary);
-            transition: width 0.3s ease;
-        }
-        
-        .nav-link:hover::after,
-        .nav-link.active::after {
-            width: 100%;
-        }
-        
-        .btn-primary {
-            background: linear-gradient(135deg, var(--primary), var(--accent));
-            transition: all 0.3s ease;
-        }
-        
-        .btn-primary:hover {
-            transform: scale(1.02);
-            box-shadow: 0 10px 25px -5px rgba(79, 70, 229, 0.4);
-        }
-        
-        .loading-spinner {
-            display: inline-block;
-            width: 24px;
-            height: 24px;
-            border: 3px solid rgba(255,255,255,.3);
-            border-radius: 50%;
-            border-top-color: white;
-            animation: spin 0.8s linear infinite;
-        }
-        
-        @keyframes spin {
-            to { transform: rotate(360deg); }
-        }
-        
-        .fade-in {
-            animation: fadeIn 0.5s ease-in;
-        }
-        
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        
-        .university-card {
-            transition: all 0.3s ease;
-            cursor: pointer;
-        }
-        
-        .university-card:hover {
-            transform: translateY(-8px);
-            box-shadow: 0 20px 25px -12px rgba(0, 0, 0, 0.2);
-        }
-        
-        .status-ELIGIBLE { background: linear-gradient(135deg, #10b981, #059669); }
-        .status-PARTIALLY_ELIGIBLE { background: linear-gradient(135deg, #f59e0b, #d97706); }
-        .status-HIGH_RISK { background: linear-gradient(135deg, #ef4444, #dc2626); }
-        
-        .stat-card {
-            background: white;
-            border-radius: 16px;
-            padding: 1rem;
-            transition: all 0.3s ease;
-        }
-        
-        .stat-card:hover {
-            transform: translateY(-3px);
-        }
-        
-        .Documents-item {
-            transition: all 0.3s ease;
-            cursor: pointer;
-        }
-        
-        .Documents-item:hover {
-            background: #f3f4f6;
-            transform: translateX(5px);
-        }
-        
-        .Documents-item.completed {
-            opacity: 0.7;
-        }
-        
-        .Documents-item.completed .check-circle {
-            color: #10b981;
-        }
-        
-        .progress-bar {
-            transition: width 0.5s ease;
-        }
-        
-        input, select, textarea {
-            transition: all 0.3s ease;
-        }
-        
-        input:focus, select:focus, textarea:focus {
-            ring: 2px solid var(--primary);
-            border-color: var(--primary);
-        }
+        .gradient-bg { background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%); }
+        .loading-spinner { width: 24px; height: 24px; border: 3px solid #e2e8f0; border-top-color: #4f46e5; border-radius: 50%; animation: spin 0.8s linear infinite; display: inline-block; }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        .tab-btn.active { color: #4f46e5; border-bottom: 2px solid #4f46e5; }
     </style>
 </head>
-<body>
+<body class="bg-gray-50">
     <!-- Navigation -->
-    <nav class="bg-white shadow-lg sticky top-0 z-50">
-        <div class="container mx-auto px-6 py-4">
+    <nav class="bg-white shadow-md sticky top-0 z-50">
+        <div class="container mx-auto px-6 py-3">
             <div class="flex items-center justify-between flex-wrap">
                 <div class="flex items-center space-x-3">
-                    <div class="w-10 h-10 bg-gradient-to-r from-indigo-600 to-purple-600 rounded-xl flex items-center justify-center">
-                        <i class="fas fa-graduation-cap text-white text-xl"></i>
+                    <div class="w-9 h-9 gradient-bg rounded-lg flex items-center justify-center">
+                        <i class="fas fa-graduation-cap text-white text-lg"></i>
                     </div>
-                    <div>
-                        <span class="text-2xl font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">StudentEngage</span>
-                        <span class="ml-2 text-xs bg-indigo-100 text-indigo-600 px-2 py-1 rounded-full">AI-Powered</span>
-                    </div>
+                    <span class="text-xl font-bold text-gray-800">Student<span class="text-indigo-600">Engage</span></span>
+                    <span class="text-xs bg-indigo-100 text-indigo-600 px-2 py-1 rounded-full">AI-Powered</span>
                 </div>
-                
-                <div class="flex space-x-6 mt-2 md:mt-0 flex-wrap gap-2">
-                    <button onclick="showTab('career')" class="nav-link text-gray-700 hover:text-indigo-600 font-medium transition tab-btn" data-tab="career">
-                        <i class="fas fa-robot mr-2"></i>Career
-                    </button>
-                    <button onclick="showTab('loan')" class="nav-link text-gray-700 hover:text-indigo-600 font-medium transition tab-btn" data-tab="loan">
-                        <i class="fas fa-rupee-sign mr-2"></i>Loan
-                    </button>
-                    <button onclick="showTab('universities')" class="nav-link text-gray-700 hover:text-indigo-600 font-medium transition tab-btn" data-tab="universities">
-                        <i class="fas fa-university mr-2"></i>Universities
-                    </button>
-                    <button onclick="showTab('Documents')" class="nav-link text-gray-700 hover:text-indigo-600 font-medium transition tab-btn" data-tab="Documents">
-                        <i class="fas fa-check-circle mr-2"></i>Documents
-                    </button>
-                    <button onclick="showTab('dashboard')" class="nav-link text-gray-700 hover:text-indigo-600 font-medium transition tab-btn" data-tab="dashboard">
-                        <i class="fas fa-chart-line mr-2"></i>Dashboard
-                    </button>
+                <div class="flex space-x-4 mt-2 md:mt-0">
+                    <button onclick="showTab('career')" class="tab-btn px-3 py-1 rounded-lg text-gray-600 hover:text-indigo-600 transition" data-tab="career">Career</button>
+                    <button onclick="showTab('loan')" class="tab-btn px-3 py-1 rounded-lg text-gray-600 hover:text-indigo-600 transition" data-tab="loan">Loan</button>
+                    <button onclick="showTab('universities')" class="tab-btn px-3 py-1 rounded-lg text-gray-600 hover:text-indigo-600 transition" data-tab="universities">Universities</button>
+                    <button onclick="window.location.href='/tracker.html'" class="px-3 py-1 rounded-lg text-gray-600 hover:text-indigo-600 transition">Documents</button>
+                    <button onclick="showTab('dashboard')" class="tab-btn px-3 py-1 rounded-lg text-gray-600 hover:text-indigo-600 transition" data-tab="dashboard">Dashboard</button>
                 </div>
-                                <button onclick="window.location.href='/tracker.html'" class="nav-link text-gray-700 hover:text-indigo-600 font-medium transition">
-                        <i class="fas fa-check-circle mr-2"></i>Documents
-                    </button>
-                
-
-    <!-- Hero Section -->
-    <div class="bg-gradient-to-r from-indigo-600 to-purple-600 text-white py-12">
-        <div class="container mx-auto px-6 text-center">
-            <h1 class="text-4xl font-bold mb-3">Your AI-Powered Study Abroad Companion</h1>
-            <p class="text-lg opacity-90">Personalized career guidance, university recommendations, loan analysis, and application tracking</p>
+            </div>
         </div>
-    </div>
+    </nav>
 
+    <!-- Main Content -->
     <div class="container mx-auto px-6 py-8">
-        <!-- Career Advice Tab -->
-        <div id="careerTab" class="tab-content fade-in">
+        <!-- Career Tab -->
+        <div id="careerTab" class="tab-content">
             <div class="max-w-6xl mx-auto">
-                <div class="glass-card p-8">
-                    <div class="flex items-center mb-6">
-                        <i class="fas fa-robot text-3xl text-indigo-600 mr-3"></i>
-                        <h2 class="text-2xl font-bold text-gray-800">AI Career Advisor</h2>
-                    </div>
-                    
-                    <div class="grid md:grid-cols-2 gap-8">
+                <div class="bg-white rounded-2xl shadow-lg p-6">
+                    <h2 class="text-2xl font-bold text-gray-800 mb-6">AI Career Advisor</h2>
+                    <div class="grid md:grid-cols-2 gap-6">
                         <div class="space-y-4">
-                            <div>
-                                <label class="block text-gray-700 font-semibold mb-2">Full Name</label>
-                                <input type="text" id="name" class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-indigo-500" placeholder="Enter your name" placeholder="Enter your name" value="">
-                            </div>
-                            <div>
-                                <label class="block text-gray-700 font-semibold mb-2">CGPA / Percentage</label>
-                                <input type="number" id="cgpa" step="0.1" class="w-full px-4 py-3 border border-gray-300 rounded-xl" placeholder="8.5" placeholder="8.5" value="">
-                            </div>
-                            <div>
-                                <label class="block text-gray-700 font-semibold mb-2">Field of Interest</label>
-                                <select id="field" class="w-full px-4 py-3 border border-gray-300 rounded-xl">
-                                    <option value="AI/ML">?? Artificial Intelligence / Machine Learning</option>
-                                    <option value="Data Science">?? Data Science & Analytics</option>
-                                    <option value="Computer Science">?? Computer Science</option>
-                                    <option value="Business Analytics">?? Business Analytics</option>
-                                    <option value="Cybersecurity">?? Cybersecurity</option>
-                                </select>
-                            </div>
-                            <div>
-                                <label class="block text-gray-700 font-semibold mb-2">Budget (? Lakhs)</label>
-                                <input type="number" id="budget" class="w-full px-4 py-3 border border-gray-300 rounded-xl" placeholder="50" placeholder="50" value="">
-                            </div>
-                            <button onclick="getCareerAdvice()" class="btn-primary w-full text-white font-bold py-3 rounded-xl transition">
-                                <i class="fas fa-magic mr-2"></i>Get AI Career Advice
-                            </button>
+                            <div><label class="block text-gray-700 font-medium mb-1">Full Name</label><input type="text" id="name" class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-indigo-500" placeholder="Enter your name"></div>
+                            <div><label class="block text-gray-700 font-medium mb-1">CGPA / Percentage</label><input type="number" id="cgpa" step="0.1" class="w-full px-4 py-2 border rounded-lg" placeholder="Enter CGPA"></div>
+                            <div><label class="block text-gray-700 font-medium mb-1">Field of Interest</label><select id="field" class="w-full px-4 py-2 border rounded-lg"><option value="">Select field</option><option value="AI/ML">🤖 Artificial Intelligence / Machine Learning</option><option value="Data Science">📊 Data Science & Analytics</option><option value="Computer Science">💻 Computer Science</option><option value="Business Analytics">📈 Business Analytics</option><option value="Cybersecurity">🔒 Cybersecurity</option></select></div>
+                            <div><label class="block text-gray-700 font-medium mb-1">Budget (₹ Lakhs)</label><input type="number" id="budget" class="w-full px-4 py-2 border rounded-lg" placeholder="Enter budget"></div>
+                            <button onclick="getCareerAdvice()" class="w-full gradient-bg text-white font-semibold py-2 rounded-lg hover:opacity-90 transition">Get AI Advice</button>
                         </div>
-                        
-                        <div class="space-y-4">
-                            <div class="stat-card">
-                                <i class="fas fa-chart-line text-indigo-600 text-2xl mb-2"></i>
-                                <h3 class="font-bold text-gray-800">Quick Stats</h3>
-                                <div class="grid grid-cols-2 gap-3 mt-3">
-                                    <div class="text-center p-2 bg-indigo-50 rounded-lg">
-                                        <div class="text-2xl font-bold text-indigo-600">16+</div>
-                                        <div class="text-sm text-gray-600">Universities</div>
-                                    </div>
-                                    <div class="text-center p-2 bg-green-50 rounded-lg">
-                                        <div class="text-2xl font-bold text-green-600">6+</div>
-                                        <div class="text-sm text-gray-600">Countries</div>
-                                    </div>
-                                    <div class="text-center p-2 bg-purple-50 rounded-lg">
-                                        <div class="text-2xl font-bold text-purple-600">95%</div>
-                                        <div class="text-sm text-gray-600">Match Accuracy</div>
-                                    </div>
-                                    <div class="text-center p-2 bg-orange-50 rounded-lg">
-                                        <div class="text-2xl font-bold text-orange-600">?8L-60L</div>
-                                        <div class="text-sm text-gray-600">Cost Range</div>
-                                    </div>
-                                </div>
-                            </div>
+                        <div class="bg-indigo-50 rounded-xl p-4">
+                            <h3 class="font-semibold text-gray-800 mb-3">Quick Stats</h3>
+                            <div class="grid grid-cols-2 gap-3"><div class="text-center p-2 bg-white rounded-lg"><div class="text-2xl font-bold text-indigo-600">16+</div><div class="text-sm">Universities</div></div><div class="text-center p-2 bg-white rounded-lg"><div class="text-2xl font-bold text-indigo-600">6+</div><div class="text-sm">Countries</div></div><div class="text-center p-2 bg-white rounded-lg"><div class="text-2xl font-bold text-indigo-600">95%</div><div class="text-sm">Match Accuracy</div></div><div class="text-center p-2 bg-white rounded-lg"><div class="text-2xl font-bold text-indigo-600">₹8L-60L</div><div class="text-sm">Cost Range</div></div></div>
                         </div>
                     </div>
-                    
-                    <div id="careerResult" class="mt-8 hidden">
-                        <div class="border-t pt-6">
-                            <h3 class="text-xl font-bold mb-4 flex items-center">
-                                <i class="fas fa-brain text-indigo-600 mr-2"></i>
-                                AI-Generated Insights
-                            </h3>
-                            <div id="aiAdvice" class="bg-gradient-to-r from-gray-50 to-indigo-50 p-6 rounded-xl whitespace-pre-wrap text-gray-700"></div>
-                            
-                            <h3 class="text-xl font-bold mt-6 mb-4 flex items-center">
-                                <i class="fas fa-university text-indigo-600 mr-2"></i>
-                                Recommended Universities
-                            </h3>
-                            <div id="universitiesList" class="grid md:grid-cols-2 gap-4"></div>
-                        </div>
-                    </div>
+                    <div id="careerResult" class="mt-6 hidden"><div id="aiAdvice" class="bg-gray-50 p-4 rounded-lg whitespace-pre-wrap"></div><div id="universitiesList" class="grid md:grid-cols-2 gap-4 mt-4"></div></div>
                 </div>
             </div>
         </div>
 
-        <!-- Loan Eligibility Tab -->
-        <div id="loanTab" class="tab-content hidden fade-in">
-            <div class="max-w-4xl mx-auto">
-                <div class="glass-card p-8">
-                    <div class="flex items-center mb-6">
-                        <i class="fas fa-rupee-sign text-3xl text-indigo-600 mr-3"></i>
-                        <h2 class="text-2xl font-bold text-gray-800">Education Loan Analyzer</h2>
-                    </div>
-                    
-                    <div class="space-y-6">
-                        <div class="grid md:grid-cols-2 gap-6">
-                            <div>
-                                <label class="block text-gray-700 font-semibold mb-2">Loan Amount (?)</label>
-                                <input type="number" id="loanAmount" class="w-full px-4 py-3 border border-gray-300 rounded-xl" placeholder="4000000" value="">
-                            </div>
-                            <div>
-                                <label class="block text-gray-700 font-semibold mb-2">Tenure (Years)</label>
-                                <input type="number" id="tenure" class="w-full px-4 py-3 border border-gray-300 rounded-xl" placeholder="10" value="">
-                            </div>
-                            <div>
-                                <label class="block text-gray-700 font-semibold mb-2">Expected Starting Salary (?/year)</label>
-                                <input type="number" id="expectedSalary" class="w-full px-4 py-3 border border-gray-300 rounded-xl" placeholder="1500000" value="">
-                            </div>
-                            <div>
-                                <label class="block text-gray-700 font-semibold mb-2">Interest Rate (%)</label>
-                                <input type="number" id="interestRate" class="w-full px-4 py-3 border border-gray-300 rounded-xl" placeholder="11" value="" step="0.5">
-                            </div>
-                        </div>
-                        <button onclick="checkLoanEligibility()" class="btn-primary w-full text-white font-bold py-3 rounded-xl transition">
-                            <i class="fas fa-calculator mr-2"></i>Analyze Loan
-                        </button>
-                    </div>
-                    
-                    <div id="loanResult" class="mt-8 hidden">
-                        <div class="border-t pt-6">
-                            <div id="loanAnalysis" class="space-y-4"></div>
-                        </div>
-                    </div>
-                </div>
-            </div>
+        <!-- Loan Tab -->
+        <div id="loanTab" class="tab-content hidden">
+            <div class="max-w-4xl mx-auto"><div class="bg-white rounded-2xl shadow-lg p-6"><h2 class="text-2xl font-bold mb-6">Education Loan Analyzer</h2><div class="grid md:grid-cols-2 gap-4"><div><label class="block text-gray-700 font-medium mb-1">Loan Amount (₹)</label><input type="number" id="loanAmount" class="w-full px-4 py-2 border rounded-lg" placeholder="Enter loan amount"></div><div><label class="block text-gray-700 font-medium mb-1">Tenure (Years)</label><input type="number" id="tenure" class="w-full px-4 py-2 border rounded-lg" placeholder="Enter tenure"></div><div><label class="block text-gray-700 font-medium mb-1">Expected Salary (₹/year)</label><input type="number" id="expectedSalary" class="w-full px-4 py-2 border rounded-lg" placeholder="Enter expected salary"></div></div><button onclick="checkLoanEligibility()" class="mt-4 w-full gradient-bg text-white font-semibold py-2 rounded-lg hover:opacity-90 transition">Analyze Loan</button><div id="loanResult" class="mt-6 hidden"></div></div></div>
         </div>
 
         <!-- Universities Tab -->
-        <div id="universitiesTab" class="tab-content hidden fade-in">
-            <div class="max-w-7xl mx-auto">
-                <div class="glass-card p-8">
-                    <div class="flex items-center justify-between mb-6 flex-wrap gap-4">
-                        <div class="flex items-center">
-                            <i class="fas fa-search text-3xl text-indigo-600 mr-3"></i>
-                            <h2 class="text-2xl font-bold text-gray-800">Global University Directory</h2>
-                        </div>
-                        <div class="flex gap-3 flex-wrap">
-                            <button onclick="filterByCountry('all')" class="px-4 py-2 bg-gray-200 rounded-lg hover:bg-indigo-600 hover:text-white transition">All</button>
-                            <button onclick="filterByCountry('USA')" class="px-4 py-2 bg-gray-200 rounded-lg hover:bg-indigo-600 hover:text-white transition">USA</button>
-                            <button onclick="filterByCountry('Canada')" class="px-4 py-2 bg-gray-200 rounded-lg hover:bg-indigo-600 hover:text-white transition">Canada</button>
-                            <button onclick="filterByCountry('Germany')" class="px-4 py-2 bg-gray-200 rounded-lg hover:bg-indigo-600 hover:text-white transition">Germany</button>
-                            <button onclick="filterByCountry('UK')" class="px-4 py-2 bg-gray-200 rounded-lg hover:bg-indigo-600 hover:text-white transition">UK</button>
-                            <button onclick="filterByCountry('Singapore')" class="px-4 py-2 bg-gray-200 rounded-lg hover:bg-indigo-600 hover:text-white transition">Singapore</button>
-                        </div>
-                    </div>
-                    
-                    <div class="flex gap-4 mb-6">
-                        <input type="text" id="searchQuery" placeholder="Search by university name, country, course, or keywords..." 
-                               class="flex-1 px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-indigo-500">
-                        <button onclick="searchUniversities()" class="btn-primary px-8 text-white rounded-xl transition">
-                            <i class="fas fa-search mr-2"></i>Search
-                        </button>
-                    </div>
-                    
-                    <div id="universitiesResult" class="grid md:grid-cols-2 lg:grid-cols-3 gap-6"></div>
-                    <div id="universitiesLoading" class="text-center py-12 hidden">
-                        <div class="loading-spinner mx-auto"></div>
-                        <p class="mt-4 text-gray-600">Loading universities...</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Document Documents Tab -->
-        <div id="DocumentsTab" class="tab-content hidden fade-in">
-            <div class="max-w-4xl mx-auto">
-                <div class="glass-card p-8">
-                    <div class="flex items-center justify-between mb-6">
-                        <div class="flex items-center">
-                            <i class="fas fa-check-circle text-3xl text-indigo-600 mr-3"></i>
-                            <h2 class="text-2xl font-bold text-gray-800">Application Document Documents</h2>
-                        </div>
-                        <div class="text-right">
-                            <div class="text-sm text-gray-600">Your Progress</div>
-                            <div class="text-2xl font-bold text-indigo-600" id="progressPercent">0%</div>
-                        </div>
-                    </div>
-                    
-                    <!-- Progress Bar -->
-                    <div class="w-full bg-gray-200 rounded-full h-4 mb-8">
-                        <div id="progressBar" class="bg-gradient-to-r from-indigo-600 to-purple-600 h-4 rounded-full progress-bar" style="width: 0%"></div>
-                    </div>
-                    
-                    <!-- Document Categories -->
-                    <div class="space-y-6">
-                        <!-- Personal Documents -->
-                        <div>
-                            <h3 class="text-lg font-bold text-gray-800 mb-3 flex items-center">
-                                <i class="fas fa-user text-indigo-600 mr-2"></i>
-                                Personal Documents
-                            </h3>
-                            <div class="space-y-2">
-                                <div class="Documents-item flex items-center justify-between p-3 bg-gray-50 rounded-lg" data-doc="passport">
-                                    <div class="flex items-center">
-                                        <i class="far fa-circle text-gray-400 mr-3 check-icon"></i>
-                                        <span>Valid Passport</span>
-                                    </div>
-                                    <button onclick="toggleDocument('passport')" class="text-sm text-indigo-600">Mark Complete</button>
-                                </div>
-                                <div class="Documents-item flex items-center justify-between p-3 bg-gray-50 rounded-lg" data-doc="photo">
-                                    <div class="flex items-center">
-                                        <i class="far fa-circle text-gray-400 mr-3 check-icon"></i>
-                                        <span>Passport Size Photographs (6 copies)</span>
-                                    </div>
-                                    <button onclick="toggleDocument('photo')" class="text-sm text-indigo-600">Mark Complete</button>
-                                </div>
-                                <div class="Documents-item flex items-center justify-between p-3 bg-gray-50 rounded-lg" data-doc="signature">
-                                    <div class="flex items-center">
-                                        <i class="far fa-circle text-gray-400 mr-3 check-icon"></i>
-                                        <span>Signature on White Paper</span>
-                                    </div>
-                                    <button onclick="toggleDocument('signature')" class="text-sm text-indigo-600">Mark Complete</button>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <!-- Academic Documents -->
-                        <div>
-                            <h3 class="text-lg font-bold text-gray-800 mb-3 flex items-center">
-                                <i class="fas fa-graduation-cap text-indigo-600 mr-2"></i>
-                                Academic Documents
-                            </h3>
-                            <div class="space-y-2">
-                                <div class="Documents-item flex items-center justify-between p-3 bg-gray-50 rounded-lg" data-doc="transcripts">
-                                    <div class="flex items-center">
-                                        <i class="far fa-circle text-gray-400 mr-3 check-icon"></i>
-                                        <span>Academic Transcripts (All semesters)</span>
-                                    </div>
-                                    <button onclick="toggleDocument('transcripts')" class="text-sm text-indigo-600">Mark Complete</button>
-                                </div>
-                                <div class="Documents-item flex items-center justify-between p-3 bg-gray-50 rounded-lg" data-doc="degree">
-                                    <div class="flex items-center">
-                                        <i class="far fa-circle text-gray-400 mr-3 check-icon"></i>
-                                        <span>Provisional / Degree Certificate</span>
-                                    </div>
-                                    <button onclick="toggleDocument('degree')" class="text-sm text-indigo-600">Mark Complete</button>
-                                </div>
-                                <div class="Documents-item flex items-center justify-between p-3 bg-gray-50 rounded-lg" data-doc="cgpa">
-                                    <div class="flex items-center">
-                                        <i class="far fa-circle text-gray-400 mr-3 check-icon"></i>
-                                        <span>CGPA / Percentage Certificate</span>
-                                    </div>
-                                    <button onclick="toggleDocument('cgpa')" class="text-sm text-indigo-600">Mark Complete</button>
-                                </div>
-                                <div class="Documents-item flex items-center justify-between p-3 bg-gray-50 rounded-lg" data-doc="backlog">
-                                    <div class="flex items-center">
-                                        <i class="far fa-circle text-gray-400 mr-3 check-icon"></i>
-                                        <span>Backlog Clearance Certificate (if any)</span>
-                                    </div>
-                                    <button onclick="toggleDocument('backlog')" class="text-sm text-indigo-600">Mark Complete</button>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <!-- Test Scores -->
-                        <div>
-                            <h3 class="text-lg font-bold text-gray-800 mb-3 flex items-center">
-                                <i class="fas fa-chart-line text-indigo-600 mr-2"></i>
-                                Standardized Test Scores
-                            </h3>
-                            <div class="space-y-2">
-                                <div class="Documents-item flex items-center justify-between p-3 bg-gray-50 rounded-lg" data-doc="ielts">
-                                    <div class="flex items-center">
-                                        <i class="far fa-circle text-gray-400 mr-3 check-icon"></i>
-                                        <span>IELTS / TOEFL Score Report</span>
-                                    </div>
-                                    <button onclick="toggleDocument('ielts')" class="text-sm text-indigo-600">Mark Complete</button>
-                                </div>
-                                <div class="Documents-item flex items-center justify-between p-3 bg-gray-50 rounded-lg" data-doc="gre">
-                                    <div class="flex items-center">
-                                        <i class="far fa-circle text-gray-400 mr-3 check-icon"></i>
-                                        <span>GRE / GMAT Score Report</span>
-                                    </div>
-                                    <button onclick="toggleDocument('gre')" class="text-sm text-indigo-600">Mark Complete</button>
-                                </div>
-                                <div class="Documents-item flex items-center justify-between p-3 bg-gray-50 rounded-lg" data-doc="sat">
-                                    <div class="flex items-center">
-                                        <i class="far fa-circle text-gray-400 mr-3 check-icon"></i>
-                                        <span>SAT / ACT (for UG programs)</span>
-                                    </div>
-                                    <button onclick="toggleDocument('sat')" class="text-sm text-indigo-600">Mark Complete</button>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <!-- Financial Documents -->
-                        <div>
-                            <h3 class="text-lg font-bold text-gray-800 mb-3 flex items-center">
-                                <i class="fas fa-rupee-sign text-indigo-600 mr-2"></i>
-                                Financial Documents
-                            </h3>
-                            <div class="space-y-2">
-                                <div class="Documents-item flex items-center justify-between p-3 bg-gray-50 rounded-lg" data-doc="bank">
-                                    <div class="flex items-center">
-                                        <i class="far fa-circle text-gray-400 mr-3 check-icon"></i>
-                                        <span>Bank Statements (Last 6 months)</span>
-                                    </div>
-                                    <button onclick="toggleDocument('bank')" class="text-sm text-indigo-600">Mark Complete</button>
-                                </div>
-                                <div class="Documents-item flex items-center justify-between p-3 bg-gray-50 rounded-lg" data-doc="itr">
-                                    <div class="flex items-center">
-                                        <i class="far fa-circle text-gray-400 mr-3 check-icon"></i>
-                                        <span>ITR / Income Proof of Co-signer</span>
-                                    </div>
-                                    <button onclick="toggleDocument('itr')" class="text-sm text-indigo-600">Mark Complete</button>
-                                </div>
-                                <div class="Documents-item flex items-center justify-between p-3 bg-gray-50 rounded-lg" data-doc="loan">
-                                    <div class="flex items-center">
-                                        <i class="far fa-circle text-gray-400 mr-3 check-icon"></i>
-                                        <span>Loan Sanction Letter (if pre-approved)</span>
-                                    </div>
-                                    <button onclick="toggleDocument('loan')" class="text-sm text-indigo-600">Mark Complete</button>
-                                </div>
-                                <div class="Documents-item flex items-center justify-between p-3 bg-gray-50 rounded-lg" data-doc="asset">
-                                    <div class="flex items-center">
-                                        <i class="far fa-circle text-gray-400 mr-3 check-icon"></i>
-                                        <span>Asset / Property Documents (if collateral)</span>
-                                    </div>
-                                    <button onclick="toggleDocument('asset')" class="text-sm text-indigo-600">Mark Complete</button>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <!-- Visa Documents -->
-                        <div>
-                            <h3 class="text-lg font-bold text-gray-800 mb-3 flex items-center">
-                                <i class="fas fa-passport text-indigo-600 mr-2"></i>
-                                Visa Documents
-                            </h3>
-                            <div class="space-y-2">
-                                <div class="Documents-item flex items-center justify-between p-3 bg-gray-50 rounded-lg" data-doc="offer">
-                                    <div class="flex items-center">
-                                        <i class="far fa-circle text-gray-400 mr-3 check-icon"></i>
-                                        <span>University Offer Letter</span>
-                                    </div>
-                                    <button onclick="toggleDocument('offer')" class="text-sm text-indigo-600">Mark Complete</button>
-                                </div>
-                                <div class="Documents-item flex items-center justify-between p-3 bg-gray-50 rounded-lg" data-doc="i20">
-                                    <div class="flex items-center">
-                                        <i class="far fa-circle text-gray-400 mr-3 check-icon"></i>
-                                        <span>I-20 / CAS Letter</span>
-                                    </div>
-                                    <button onclick="toggleDocument('i20')" class="text-sm text-indigo-600">Mark Complete</button>
-                                </div>
-                                <div class="Documents-item flex items-center justify-between p-3 bg-gray-50 rounded-lg" data-doc="ds160">
-                                    <div class="flex items-center">
-                                        <i class="far fa-circle text-gray-400 mr-3 check-icon"></i>
-                                        <span>DS-160 / Visa Application Form</span>
-                                    </div>
-                                    <button onclick="toggleDocument('ds160')" class="text-sm text-indigo-600">Mark Complete</button>
-                                </div>
-                                <div class="Documents-item flex items-center justify-between p-3 bg-gray-50 rounded-lg" data-doc="visaFee">
-                                    <div class="flex items-center">
-                                        <i class="far fa-circle text-gray-400 mr-3 check-icon"></i>
-                                        <span>Visa Fee Payment Receipt</span>
-                                    </div>
-                                    <button onclick="toggleDocument('visaFee')" class="text-sm text-indigo-600">Mark Complete</button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div class="mt-8 p-4 bg-indigo-50 rounded-lg">
-                        <div class="flex items-center justify-between">
-                            <div>
-                                <i class="fas fa-download text-indigo-600 mr-2"></i>
-                                <span class="font-semibold">Export Documents</span>
-                            </div>
-                            <button onclick="exportDocuments()" class="text-indigo-600 hover:text-indigo-800">
-                                <i class="fas fa-file-pdf mr-1"></i>Download PDF
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </div>
+        <div id="universitiesTab" class="tab-content hidden">
+            <div class="max-w-7xl mx-auto"><div class="bg-white rounded-2xl shadow-lg p-6"><div class="flex gap-4 mb-6"><input type="text" id="searchQuery" placeholder="Search universities..." class="flex-1 px-4 py-2 border rounded-lg"><button onclick="searchUniversities()" class="gradient-bg text-white px-6 py-2 rounded-lg hover:opacity-90 transition">Search</button></div><div id="universitiesResult" class="grid md:grid-cols-3 gap-4"></div></div></div>
         </div>
 
         <!-- Dashboard Tab -->
-        <div id="dashboardTab" class="tab-content hidden fade-in">
-            <div class="max-w-6xl mx-auto">
-                <div class="glass-card p-8">
-                    <div class="flex items-center mb-6">
-                        <i class="fas fa-chart-pie text-3xl text-indigo-600 mr-3"></i>
-                        <h2 class="text-2xl font-bold text-gray-800">Analytics Dashboard</h2>
-                    </div>
-                    
-                    <div class="grid md:grid-cols-3 gap-6 mb-8">
-                        <div class="stat-card text-center">
-                            <i class="fas fa-globe text-4xl text-indigo-600 mb-3"></i>
-                            <div class="text-3xl font-bold text-gray-800" id="totalCountries">0</div>
-                            <div class="text-gray-600">Countries</div>
-                        </div>
-                        <div class="stat-card text-center">
-                            <i class="fas fa-university text-4xl text-indigo-600 mb-3"></i>
-                            <div class="text-3xl font-bold text-gray-800" id="totalUniversities">0</div>
-                            <div class="text-gray-600">Universities</div>
-                        </div>
-                        <div class="stat-card text-center">
-                            <i class="fas fa-graduation-cap text-4xl text-indigo-600 mb-3"></i>
-                            <div class="text-3xl font-bold text-gray-800" id="avgSalary">$0</div>
-                            <div class="text-gray-600">Average Starting Salary</div>
-                        </div>
-                    </div>
-                    
-                    <div class="grid md:grid-cols-2 gap-6">
-                        <div class="stat-card">
-                            <h3 class="font-bold text-gray-800 mb-3">Top Destinations</h3>
-                            <div id="topDestinations" class="space-y-2"></div>
-                        </div>
-                        <div class="stat-card">
-                            <h3 class="font-bold text-gray-800 mb-3">Popular Courses</h3>
-                            <div id="popularCourses" class="space-y-2"></div>
-                        </div>
-                    </div>
-                </div>
-            </div>
+        <div id="dashboardTab" class="tab-content hidden">
+            <div class="max-w-6xl mx-auto"><div class="bg-white rounded-2xl shadow-lg p-6"><div class="grid md:grid-cols-3 gap-4 mb-6"><div class="text-center p-4 bg-indigo-50 rounded-xl"><div class="text-3xl font-bold text-indigo-600" id="totalCountries">0</div><div>Countries</div></div><div class="text-center p-4 bg-indigo-50 rounded-xl"><div class="text-3xl font-bold text-indigo-600" id="totalUniversities">0</div><div>Universities</div></div><div class="text-center p-4 bg-indigo-50 rounded-xl"><div class="text-3xl font-bold text-indigo-600" id="avgSalary">$0</div><div>Avg Salary</div></div></div></div></div>
         </div>
     </div>
 
-    <script>        const API_BASE = '';
+    <script>
+        const API_BASE = '';
         let allUniversities = [];
         
-        function showTab(tabName) { 
-            document.querySelectorAll('.tab-content').forEach(t => t.classList.add('hidden')); 
-            document.getElementById(tabName + 'Tab').classList.remove('hidden'); 
-            if(tabName === 'dashboard') loadDashboard(); 
-            if(tabName === 'universities') loadAllUniversities(); 
+        function showTab(tabName) {
+            document.querySelectorAll('.tab-content').forEach(t => t.classList.add('hidden'));
+            document.getElementById(tabName + 'Tab').classList.remove('hidden');
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+            if(tabName === 'dashboard') loadDashboard();
+            if(tabName === 'universities') loadAllUniversities();
         }
         
-        async function getCareerAdvice() { 
-            const name=document.getElementById('name').value||'Student'; 
-            const cgpa=document.getElementById('cgpa').value; 
-            const field=document.getElementById('field').value; 
-            const budget=document.getElementById('budget').value; 
-            if(!cgpa||!field||!budget){alert('Please fill all fields');return;} 
-            document.getElementById('careerResult').classList.remove('hidden'); 
-            document.getElementById('aiAdvice').innerHTML='<div class="text-center"><div class="loading-spinner"></div><p class="mt-2">AI analyzing...</p></div>';
-            document.getElementById('universitiesList').innerHTML='<div class="text-center">Loading recommendations...</div>';
-            try{
-                const res=await fetch('/api/career/advice',{
-                    method:'POST',
-                    headers:{'Content-Type':'application/json'},
-                    body:JSON.stringify({name,cgpa,field,budget})
-                }); 
-                const data=await res.json(); 
-                document.getElementById('aiAdvice').innerHTML=(data.ai_powered_advice||'No advice').replace(/\n/g,'<br>'); 
-                const unis=data.rag_retrieved_universities||[]; 
-                if(unis.length) document.getElementById('universitiesList').innerHTML=unis.map(u=>`<div class="bg-white border rounded-lg p-4"><h4 class="font-bold text-indigo-600">${u.name}</h4><p>📍 ${u.country} | Rank #${u.ranking}</p><p>💰 ${u.cost}/year | 💵 ${u.avgSalary}/year</p><span class="text-sm font-semibold text-indigo-600">Match: ${Math.round(u.relevanceScore||85)}%</span></div>`).join(''); 
-            }catch(e){
-                document.getElementById('aiAdvice').innerHTML='<div class="text-red-500">Error connecting to server. Please try again.</div>';
-                document.getElementById('universitiesList').innerHTML='';
-            } 
+        async function getCareerAdvice() {
+            const name = document.getElementById('name').value || 'Student';
+            const cgpa = document.getElementById('cgpa').value;
+            const field = document.getElementById('field').value;
+            const budget = document.getElementById('budget').value;
+            
+            if(!cgpa || !field || !budget) {
+                alert('Please fill all fields: CGPA, Field of Interest, and Budget');
+                return;
+            }
+            
+            document.getElementById('careerResult').classList.remove('hidden');
+            document.getElementById('aiAdvice').innerHTML = '<div class="text-center"><div class="loading-spinner"></div><p class="mt-2">AI analyzing your profile...</p></div>';
+            document.getElementById('universitiesList').innerHTML = '<div class="text-center">Loading recommendations...</div>';
+            
+            try {
+                const response = await fetch('/api/career/advice', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ name, cgpa, field, budget })
+                });
+                const data = await response.json();
+                document.getElementById('aiAdvice').innerHTML = (data.ai_powered_advice || 'No advice received').replace(/\n/g, '<br>');
+                const universities = data.rag_retrieved_universities || [];
+                if(universities.length > 0) {
+                    document.getElementById('universitiesList').innerHTML = universities.map(uni => `
+                        <div class="bg-white border rounded-lg p-4 shadow hover:shadow-md transition">
+                            <h4 class="font-bold text-lg text-indigo-600">${uni.name}</h4>
+                            <p class="text-gray-600">📍 ${uni.country} | Rank #${uni.ranking}</p>
+                            <p class="text-sm mt-2">💰 Cost: $${uni.cost}/year</p>
+                            <p class="text-sm">💵 Expected Salary: $${uni.avgSalary}/year</p>
+                            <span class="inline-block mt-2 text-xs font-semibold text-indigo-600 bg-indigo-50 px-2 py-1 rounded">Match: ${Math.round(uni.relevanceScore || 85)}%</span>
+                        </div>
+                    `).join('');
+                } else {
+                    document.getElementById('universitiesList').innerHTML = '<p class="text-gray-500 text-center">No universities found. Try different criteria.</p>';
+                }
+            } catch(error) {
+                console.error('Error:', error);
+                document.getElementById('aiAdvice').innerHTML = '<div class="text-red-500 text-center">Error connecting to server. Please make sure the backend is running.</div>';
+                document.getElementById('universitiesList').innerHTML = '';
+            }
         }
         
-        async function checkLoanEligibility(){ 
-            const la=document.getElementById('loanAmount').value; 
-            const t=document.getElementById('tenure').value; 
-            const sal=document.getElementById('expectedSalary').value; 
-            if(!la||!t||!sal){alert('Please fill all fields');return;} 
-            document.getElementById('loanResult').classList.remove('hidden'); 
-            document.getElementById('loanAnalysis').innerHTML='<div class="loading-spinner"></div>'; 
-            try{
-                const res=await fetch('/api/loan/eligibility',{
-                    method:'POST',
-                    headers:{'Content-Type':'application/json'},
-                    body:JSON.stringify({loanAmount:parseInt(la),tenure:parseInt(t),expectedSalary:parseInt(sal)})
-                }); 
-                const d=await res.json(); 
-                const cls=d.status==='ELIGIBLE'?'bg-green-100':(d.status==='PARTIALLY_ELIGIBLE'?'bg-yellow-100':'bg-red-100'); 
-                document.getElementById('loanAnalysis').innerHTML=`<div class="${cls} p-4 rounded-lg"><div class="grid grid-cols-2 gap-3"><div><strong>Status:</strong> ${d.status}</div><div><strong>EMI:</strong> ${d.monthly_emi}</div><div><strong>EMI Ratio:</strong> ${d.emi_to_income_ratio}</div><div><strong>Loan:</strong> ₹${d.loan_amount_lakhs}L</div></div></div><div class="bg-gray-50 p-4 rounded-lg mt-3">${(d.ai_loan_advice||'').replace(/\n/g,'<br>')}</div>`; 
-            }catch(e){
-                document.getElementById('loanAnalysis').innerHTML='<div class="text-red-500">Error analyzing loan</div>';
-            } 
+        async function checkLoanEligibility() {
+            const loanAmount = document.getElementById('loanAmount').value;
+            const tenure = document.getElementById('tenure').value;
+            const expectedSalary = document.getElementById('expectedSalary').value;
+            
+            if(!loanAmount || !tenure || !expectedSalary) {
+                alert('Please fill all loan fields');
+                return;
+            }
+            
+            document.getElementById('loanResult').classList.remove('hidden');
+            document.getElementById('loanAnalysis').innerHTML = '<div class="text-center"><div class="loading-spinner"></div><p class="mt-2">Analyzing your loan...</p></div>';
+            
+            try {
+                const response = await fetch('/api/loan/eligibility', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ 
+                        loanAmount: parseInt(loanAmount), 
+                        tenure: parseInt(tenure), 
+                        expectedSalary: parseInt(expectedSalary) 
+                    })
+                });
+                const data = await response.json();
+                const statusClass = data.status === 'ELIGIBLE' ? 'bg-green-100 border-green-500' : 
+                                   (data.status === 'PARTIALLY_ELIGIBLE' ? 'bg-yellow-100 border-yellow-500' : 'bg-red-100 border-red-500');
+                
+                let html = `<div class="${statusClass} border-l-4 p-4 rounded-lg">
+                    <div class="grid md:grid-cols-2 gap-4">
+                        <div><strong>Status:</strong> <span class="font-bold">${data.status}</span></div>
+                        <div><strong>Monthly EMI:</strong> ${data.monthly_emi || 'N/A'}</div>
+                        <div><strong>EMI/Income Ratio:</strong> ${data.emi_to_income_ratio || 'N/A'}</div>
+                        <div><strong>Loan Amount:</strong> ₹${data.loan_amount_lakhs || 'N/A'} Lakhs</div>
+                    </div>
+                </div>`;
+                
+                if(data.ai_loan_advice) {
+                    html += `<div class="bg-gray-50 p-4 rounded-lg mt-4">${data.ai_loan_advice.replace(/\n/g, '<br>')}</div>`;
+                }
+                document.getElementById('loanAnalysis').innerHTML = html;
+            } catch(error) {
+                document.getElementById('loanAnalysis').innerHTML = '<div class="text-red-500">Error analyzing loan. Please try again.</div>';
+            }
         }
         
-        async function searchUniversities(){ 
-            const q=document.getElementById('searchQuery').value; 
-            try{
-                const res=await fetch(`/api/universities?query=${encodeURIComponent(q)}`); 
-                const d=await res.json(); 
-                allUniversities=d.universities||[]; 
-                displayUniversities(allUniversities); 
-            }catch(e){} 
+        async function searchUniversities() {
+            const query = document.getElementById('searchQuery').value;
+            try {
+                const response = await fetch(`/api/universities?query=${encodeURIComponent(query)}`);
+                const data = await response.json();
+                allUniversities = data.universities || [];
+                displayUniversities(allUniversities);
+            } catch(error) {
+                document.getElementById('universitiesResult').innerHTML = '<div class="text-red-500 text-center">Error loading universities</div>';
+            }
         }
         
-        function displayUniversities(unis){ 
-            if(!unis.length){document.getElementById('universitiesResult').innerHTML='<p class="text-center">No universities found</p>';return;} 
-            document.getElementById('universitiesResult').innerHTML=unis.map(u=>`<div class="bg-white border rounded-lg p-4"><h4 class="font-bold text-indigo-600">${u.name}</h4><p>📍 ${u.country} | Rank #${u.ranking}</p><p>💰 ${u.cost}/year | 💵 ${u.avgSalary}/year</p></div>`).join(''); 
+        function displayUniversities(universities) {
+            if(!universities.length) {
+                document.getElementById('universitiesResult').innerHTML = '<p class="text-center text-gray-500">No universities found</p>';
+                return;
+            }
+            document.getElementById('universitiesResult').innerHTML = universities.map(uni => `
+                <div class="bg-white border rounded-lg p-4 shadow hover:shadow-md transition">
+                    <h4 class="font-bold text-lg text-indigo-600">${uni.name}</h4>
+                    <p class="text-gray-600">📍 ${uni.country} | Rank #${uni.ranking}</p>
+                    <p class="text-sm mt-2">💰 Cost: $${uni.cost}/year</p>
+                    <p class="text-sm">💵 Expected Salary: $${uni.avgSalary}/year</p>
+                    <p class="text-xs text-gray-500 mt-2">🎓 ${uni.courses || 'Various programs'}</p>
+                </div>
+            `).join('');
         }
         
-        async function loadAllUniversities(){ 
-            try{
-                const res=await fetch('/api/universities'); 
-                const d=await res.json(); 
-                allUniversities=d.universities||[]; 
-                displayUniversities(allUniversities); 
-            }catch(e){} 
+        async function loadAllUniversities() {
+            try {
+                const response = await fetch('/api/universities');
+                const data = await response.json();
+                allUniversities = data.universities || [];
+                displayUniversities(allUniversities);
+            } catch(error) {
+                console.error('Error loading universities:', error);
+            }
         }
         
-        async function loadDashboard(){ 
-            try{
-                const res=await fetch('/api/universities'); 
-                const d=await res.json(); 
-                const u=d.universities||[]; 
-                const countries=[...new Set(u.map(i=>i.country))]; 
-                document.getElementById('totalCountries').innerText=countries.length; 
-                document.getElementById('totalUniversities').innerText=u.length; 
-                const avg=u.reduce((s,i)=>s+(i.avgSalary||0),0)/u.length; 
-                document.getElementById('avgSalary').innerText='
+        async function loadDashboard() {
+            try {
+                const response = await fetch('/api/universities');
+                const data = await response.json();
+                const universities = data.universities || [];
+                const countries = [...new Set(universities.map(u => u.country))];
+                document.getElementById('totalCountries').innerText = countries.length;
+                document.getElementById('totalUniversities').innerText = universities.length;
+                const avgSalary = universities.reduce((sum, u) => sum + (u.avgSalary || 0), 0) / universities.length;
+                document.getElementById('avgSalary').innerText = '$' + Math.round(avgSalary / 1000) + 'k';
+            } catch(error) {
+                console.error('Error loading dashboard:', error);
+            }
+        }
+        
+        // Initialize
+        loadAllUniversities();
+        showTab('career');
+    </script>
 </body>
 </html>
-
-
-
-
-
-
-+Math.round(avg/1000)+'k'; 
-            }catch(e){} 
-        }
-        
-        loadAllUniversities(); 
-        showTab('career');</script>
-</body>
-</html>
-
-
-
-
-
-
-
