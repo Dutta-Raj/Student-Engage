@@ -1,0 +1,222 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>StudentEngage - Document Tracker</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 2rem;
+            font-family: 'Inter', sans-serif;
+        }
+        .card {
+            background: white;
+            border-radius: 24px;
+            box-shadow: 0 20px 35px -10px rgba(0,0,0,0.2);
+            padding: 2rem;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+        .progress-bar {
+            transition: width 0.5s ease;
+        }
+        .btn {
+            transition: all 0.3s;
+        }
+        .btn:hover {
+            transform: translateY(-2px);
+        }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <div class="flex justify-between items-center mb-6">
+            <div>
+                <h1 class="text-3xl font-bold text-indigo-600">
+                    <i class="fas fa-check-double mr-2"></i>Document Tracker
+                </h1>
+                <p class="text-gray-500 mt-1">Track your study abroad application documents</p>
+            </div>
+            <a href="/" class="bg-gray-100 text-gray-600 px-4 py-2 rounded-lg hover:bg-gray-200">
+                <i class="fas fa-home mr-1"></i> Home
+            </a>
+        </div>
+
+        <!-- Progress Section -->
+        <div class="mb-8">
+            <div class="flex justify-between mb-2">
+                <span class="font-semibold text-gray-700">Completion Progress</span>
+                <span class="font-bold text-indigo-600 text-xl" id="progressPercent">0%</span>
+            </div>
+            <div class="w-full bg-gray-200 rounded-full h-4">
+                <div id="progressBar" class="bg-indigo-600 h-4 rounded-full progress-bar" style="width: 0%"></div>
+            </div>
+        </div>
+
+        <!-- Checklist Items -->
+        <div id="checklistContainer" class="space-y-4 mb-6"></div>
+
+        <!-- Report Section -->
+        <div class="bg-gray-50 rounded-lg p-4 mb-6">
+            <h3 class="font-bold text-gray-700 mb-2">
+                <i class="fas fa-file-alt text-indigo-600 mr-2"></i>Report Preview
+            </h3>
+            <div id="reportPreview" class="text-xs bg-white p-3 rounded border max-h-40 overflow-auto font-mono"></div>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="flex gap-3 flex-wrap">
+            <button id="copyBtn" class="bg-indigo-600 text-white px-5 py-2 rounded-lg btn flex items-center gap-2">
+                <i class="fas fa-copy"></i> Copy to Clipboard
+            </button>
+            <button id="saveBtn" class="bg-green-600 text-white px-5 py-2 rounded-lg btn flex items-center gap-2">
+                <i class="fas fa-download"></i> Download as TXT
+            </button>
+            <button id="resetBtn" class="bg-red-500 text-white px-5 py-2 rounded-lg btn flex items-center gap-2">
+                <i class="fas fa-trash-alt"></i> Reset All
+            </button>
+        </div>
+
+        <div class="mt-4 text-sm text-gray-500 bg-blue-50 p-2 rounded text-center">
+            💡 <strong>How to save:</strong> Click "Copy to Clipboard" → Open Notepad → Paste (Ctrl+V) → Save
+        </div>
+    </div>
+
+    <script>
+        const documents = [
+            { id: 1, name: "Valid Passport", cat: "Personal", done: false },
+            { id: 2, name: "Passport Size Photos", cat: "Personal", done: false },
+            { id: 3, name: "Signature on White Paper", cat: "Personal", done: false },
+            { id: 4, name: "Academic Transcripts", cat: "Academic", done: false },
+            { id: 5, name: "Degree Certificate", cat: "Academic", done: false },
+            { id: 6, name: "CGPA Certificate", cat: "Academic", done: false },
+            { id: 7, name: "IELTS/TOEFL Score", cat: "Tests", done: false },
+            { id: 8, name: "GRE/GMAT Score", cat: "Tests", done: false },
+            { id: 9, name: "Bank Statements", cat: "Financial", done: false },
+            { id: 10, name: "ITR/Income Proof", cat: "Financial", done: false },
+            { id: 11, name: "Loan Sanction Letter", cat: "Financial", done: false },
+            { id: 12, name: "University Offer Letter", cat: "Visa", done: false },
+            { id: 13, name: "I-20 / CAS Letter", cat: "Visa", done: false },
+            { id: 14, name: "Visa Fee Receipt", cat: "Visa", done: false },
+            { id: 15, name: "Medical Report", cat: "Visa", done: false }
+        ];
+
+        let items = [...documents];
+
+        function saveToLocal() {
+            localStorage.setItem('doc_tracker', JSON.stringify(items));
+        }
+
+        function loadFromLocal() {
+            const saved = localStorage.getItem('doc_tracker');
+            if (saved) {
+                items = JSON.parse(saved);
+            }
+        }
+
+        function render() {
+            const cats = [...new Set(items.map(i => i.cat))];
+            let html = '';
+            for (let cat of cats) {
+                html += `<div class="mb-4"><h3 class="font-bold text-gray-800 mb-2">📁 ${cat}</h3><div class="space-y-2">`;
+                for (let item of items.filter(i => i.cat === cat)) {
+                    html += `
+                        <div class="flex justify-between items-center p-3 bg-gray-50 rounded-lg">
+                            <div class="flex items-center">
+                                <i class="${item.done ? 'fas fa-check-circle text-green-500' : 'far fa-circle text-gray-400'} mr-3 text-xl"></i>
+                                <span class="${item.done ? 'line-through text-gray-500' : 'text-gray-700'}">${item.name}</span>
+                            </div>
+                            <button onclick="toggle(${item.id})" class="px-3 py-1 rounded text-sm ${item.done ? 'bg-green-100 text-green-600' : 'bg-indigo-100 text-indigo-600'}">
+                                ${item.done ? '✓ Done' : 'Mark Done'}
+                            </button>
+                        </div>
+                    `;
+                }
+                html += `</div></div>`;
+            }
+            document.getElementById('checklistContainer').innerHTML = html;
+            
+            const total = items.length;
+            const completed = items.filter(i => i.done).length;
+            const percent = Math.round((completed / total) * 100);
+            document.getElementById('progressPercent').innerText = `${percent}%`;
+            document.getElementById('progressBar').style.width = `${percent}%`;
+            
+            updateReport();
+        }
+
+        function toggle(id) {
+            const item = items.find(i => i.id === id);
+            if (item) {
+                item.done = !item.done;
+                saveToLocal();
+                render();
+            }
+        }
+
+        function updateReport() {
+            const total = items.length;
+            const completed = items.filter(i => i.done).length;
+            const percent = Math.round((completed / total) * 100);
+            const date = new Date().toLocaleString();
+            const doneList = items.filter(i => i.done).map(i => `  ✓ ${i.name}`).join('\n');
+            const pendingList = items.filter(i => !i.done).map(i => `  ✗ ${i.name}`).join('\n');
+            
+            const report = `
+╔════════════════════════════════════════════════════╗
+║           STUDENTENGAGE - DOCUMENT TRACKER         ║
+╚════════════════════════════════════════════════════╝
+
+📅 Date: ${date}
+📊 Progress: ${completed}/${total} (${percent}%)
+
+✅ COMPLETED (${items.filter(i => i.done).length}):
+${doneList || '  None'}
+
+⏳ PENDING (${items.filter(i => !i.done).length}):
+${pendingList || '  All done! 🎉'}
+
+════════════════════════════════════════════════════
+🎓 Keep up the great work!
+            `;
+            document.getElementById('reportPreview').innerText = report;
+        }
+
+        function copyReport() {
+            const report = document.getElementById('reportPreview').innerText;
+            navigator.clipboard.writeText(report);
+            alert('✅ Report copied! Paste it anywhere (Ctrl+V)');
+        }
+
+        function downloadReport() {
+            const report = document.getElementById('reportPreview').innerText;
+            const blob = new Blob([report], { type: 'text/plain' });
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            link.download = `document_tracker_${new Date().toISOString().split('T')[0]}.txt`;
+            link.click();
+            URL.revokeObjectURL(link.href);
+            alert('✅ File downloaded! Check your Downloads folder.');
+        }
+
+        function resetAll() {
+            if (confirm('Reset all documents to pending?')) {
+                items.forEach(i => i.done = false);
+                saveToLocal();
+                render();
+                alert('✅ All items reset!');
+            }
+        }
+
+        loadFromLocal();
+        render();
+        document.getElementById('copyBtn').onclick = copyReport;
+        document.getElementById('saveBtn').onclick = downloadReport;
+        document.getElementById('resetBtn').onclick = resetAll;
+    </script>
+</body>
+</html>
